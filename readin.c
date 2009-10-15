@@ -6,6 +6,7 @@
  *----------------------------------------------------------------------
  */
 
+#include <string.h>
 #include <stdio.h>
 #include "std.h"
 #include "colm.h"
@@ -39,7 +40,7 @@ NODE *list;
 	TotalLines++;
 	Instr[strlen(Instr)-1] = '\0'; /* strip newline */
 	append(Instr, list); /* add it to the list */
-	ASSERT(list->prev != NULL);
+	assert(list->prev != NULL);
     }
     return TotalLines;
 }

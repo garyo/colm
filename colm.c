@@ -20,6 +20,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "std.h"
 #include "colm.h"
 
@@ -116,7 +117,7 @@ char **argv;
 Usage()
 {
     fprintf(stderr,"\n\
-Usage: %s [-cglnstvwLT] <files>\n\
+Usage: colm [-cglnstvwLT] <files>\n\
  Use '-' for stdin.\n\
  Options:\n\
  -v	variable-width columns (default: fixed-width)\n\

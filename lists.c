@@ -8,6 +8,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "std.h"
 #include "colm.h"
 
@@ -26,8 +27,8 @@ NODE *list;
 {
     register NODE *new;
 
-    ASSERT(str != NULL);
-    ASSERT(list != NULL);
+    assert(str != NULL);
+    assert(list != NULL);
 
     NEW(new, NODE, 1);		/* get a node */
     NEW(new->string, char, strlen(str) + 1); /* get string storage */
@@ -51,16 +52,16 @@ int n;
     register NODE *current = list->next;
     NODE *longest = current;
 
-    ASSERT(list != NULL);
-    ASSERT(list->next != NULL);
-    ASSERT(list->prev != NULL);
+    assert(list != NULL);
+    assert(list->next != NULL);
+    assert(list->prev != NULL);
 
     for ( ; current != list && n != 0; current = current->next) {
         if (current->length > longest->length)
 	    longest = current;
 	if (n > 0) n--;
     }
-    ASSERT(longest != NULL);
+    assert(longest != NULL);
     return longest->length;
 }
 
@@ -75,9 +76,9 @@ int n;
     register NODE *current;
     int total = 0;
 
-    ASSERT(list != NULL);
-    ASSERT(list->next != NULL);
-    ASSERT(list->prev != NULL);
+    assert(list != NULL);
+    assert(list->next != NULL);
+    assert(list->prev != NULL);
 
     for (current = list->next; current != list && n != 0;
 	 current = current->next) {
@@ -94,12 +95,12 @@ int n;
 {
     register NODE *current = list->next;
 
-    ASSERT(list != NULL);
-    ASSERT(list->next != NULL);
-    ASSERT(list->prev != NULL);
+    assert(list != NULL);
+    assert(list->next != NULL);
+    assert(list->prev != NULL);
 
     for ( ; current != list && n != 0; current = current->next, n--)
 	;
-    ASSERT(current != list);
+    assert(current != list);
     return current;
 }

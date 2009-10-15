@@ -14,68 +14,11 @@ extern int debug;
 
 static char SCCSId[] = "@(#)column.c	1.1 6/3/88 (MASSCOMP) 22:44:43";
 
-/* Returns success or failure. */
-BOOLEAN
-Columnate(list, opts, totlines)
-NODE *list;
-OPTS *opts;
-int totlines;			/* total number of text lines to columnate */
-{
-    /* First, check to make sure it's possible to columnate the output. */
-    if (findmax(list, totlines) > opts->Width) {
-	fprintf(stderr, "\
-Error: Some input line is longer than the output width of %d chars.\n",
-		opts->Width);
-	exit(1);
-    }
-    if (!SinglePageCol(list, opts, totlines))
-	return MultiPageCol(list, opts, totlines);
-    else return TRUE;
-}
-
-/* SinglePageCol returns TRUE or FALSE, according to whether the text */
+/* returns TRUE or FALSE, according to whether the text */
 /* will fit on the page. */
-static BOOLEAN
-SinglePageCol(list, opts, totlines)
-NODE *list;
-OPTS *opts;
-int totlines;
-{
-    int try_again = TRUE;
-    while (try_again) {
-	try_again = FALSE;
-	
-	if (opts->ColWidth > 0 && opts->Ncols > 0)
-	    return FixedColumns(list, opts, totlines);
-	if (opts->Vflg == TRUE)
-	    return VarColumns(list, opts, totlines);
-	if (opts->Ncols > 0 && opts->Sflg == TRUE  && opts->ColWidth == 0) {
-	    opts->ColWidth = opts->Width / opts->Ncols;
-	    return FixedColumns(list, opts, totlines);
-	}
-	/* We can figure out the column width by finding the largest */
-	/* string.  Once we find that, we process again to pick up any */
-	/* other options. */
-	if (opts->ColWidth == 0) {
-	    opts->ColWidth = findmax(list, -1) + opts->Gutter;
-	    try_again = TRUE;
-	}
-	/* If we know the column width and the output width, we can */
-	/* figure out the number of columns. */
-	if (opts->ColWidth > 0 && opts->Width > 0 && opts->Ncols == 0) {
-	    opts->Ncols = opts->Width / opts->ColWidth;
-	    try_again = TRUE;
-	}
-    }
-}
-
-/* Same return value as for SinglePageCol. */
 /* FixedColumns() requires that ColWidth, NCols and Width be set. */
 BOOLEAN
-static FixedColumns(list, opts, totlines)
-NODE *list;
-OPTS *opts;
-int totlines;
+static FixedColumns(NODE *list, OPTS *opts, int totlines)
 {
     NODE *cols[MAX_COLS];	/* NODE pointers for each column */
     register int i,j;
@@ -83,7 +26,7 @@ int totlines;
 
     /* This is the easy case - just put out the lines. */
 
-    ASSERT(opts->ColWidth > 0 && opts->Ncols > 0);
+    assert(opts->ColWidth > 0 && opts->Ncols > 0);
     /* We only print an error message here if the user actually */
     /* specified (via capital-O Opts) a number of columns and width. */
     if (Opts.Ncols > 0 && Opts.ColWidth > 0 &&
@@ -141,12 +84,59 @@ int totlines;
     }
 }
 
+/* SinglePageCol returns TRUE or FALSE, according to whether the text */
+/* will fit on the page. */
+static BOOLEAN
+SinglePageCol(NODE *list, OPTS *opts, int totlines)
+{
+    int try_again = TRUE;
+    while (try_again) {
+	try_again = FALSE;
+	
+	if (opts->ColWidth > 0 && opts->Ncols > 0)
+	    return FixedColumns(list, opts, totlines);
+	if (opts->Vflg == TRUE)
+	    return VarColumns(list, opts, totlines);
+	if (opts->Ncols > 0 && opts->Sflg == TRUE  && opts->ColWidth == 0) {
+	    opts->ColWidth = opts->Width / opts->Ncols;
+	    return FixedColumns(list, opts, totlines);
+	}
+	/* We can figure out the column width by finding the largest */
+	/* string.  Once we find that, we process again to pick up any */
+	/* other options. */
+	if (opts->ColWidth == 0) {
+	    opts->ColWidth = findmax(list, -1) + opts->Gutter;
+	    try_again = TRUE;
+	}
+	/* If we know the column width and the output width, we can */
+	/* figure out the number of columns. */
+	if (opts->ColWidth > 0 && opts->Width > 0 && opts->Ncols == 0) {
+	    opts->Ncols = opts->Width / opts->ColWidth;
+	    try_again = TRUE;
+	}
+    }
+}
+
 BOOLEAN
-static MultiPageCol(list, opts, totlines)
-NODE *list;
-OPTS *opts;
-int totlines;
+static MultiPageCol(NODE *list, OPTS *opts, int totlines)
 {
     fprintf(stderr,"Can't do multi-page columnation (yet).\n");
     return FALSE;
 }
+
+/* Returns success or failure. */
+BOOLEAN
+Columnate(NODE *list, OPTS *opts, int totlines)
+{
+    /* First, check to make sure it's possible to columnate the output. */
+    if (findmax(list, totlines) > opts->Width) {
+	fprintf(stderr, "\
+Error: Some input line is longer than the output width of %d chars.\n",
+		opts->Width);
+	exit(1);
+    }
+    if (!SinglePageCol(list, opts, totlines))
+	return MultiPageCol(list, opts, totlines);
+    else return TRUE;
+}
+

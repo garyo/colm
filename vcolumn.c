@@ -10,29 +10,16 @@
 #include "std.h"
 #include "colm.h"
 
-extern int debug;
-void ClearWidths();
-
 static char SCCSId[] = "@(#)vcolumn.c	1.2 6/3/88 (MASSCOMP) 23:11:49";
 
-BOOLEAN
-    VarColumns(list, opts, totlines)
-NODE *list;
-OPTS *opts;
-int totlines;
-{
-    ASSERT(Opts.ColWidth == 0);
-    /* Only auto-columnate if she didn't say how many columns, or if */
-    /* the requested number of columns fails. */
-    if (Opts.Ncols == 0 || ManVarColumns(list, opts, totlines) == FALSE)
-	AutoVarColumns(list, opts, totlines);
-}
+extern int debug;
+static void ClearWidths(int w[], int nc);
+static BOOLEAN VariCol(NODE *list, OPTS *opts,
+		       int textlines, int outlines, int widths[]);
+static OutVCols(NODE *list, OPTS *opts, int textlines, int outlines, int widths[]);
 
 BOOLEAN
-    ManVarColumns(list, opts, totlines)
-NODE *list;
-OPTS *opts;
-int totlines;
+    ManVarColumns(NODE *list, OPTS *opts, int totlines)
 {
     int outlines;
     int widths[MAX_COLS];	/* column-width table */
@@ -40,7 +27,7 @@ int totlines;
     register int line, col;
     int twidth = 0;
     
-    ASSERT(opts->Ncols > 0);
+    assert(opts->Ncols > 0);
     outlines = (totlines + opts->Ncols - 1) / opts->Ncols;
     
     ClearWidths(widths, MAX_COLS);
@@ -70,10 +57,7 @@ int totlines;
 }
 
 BOOLEAN
-    AutoVarColumns(list, opts, totlines)
-NODE *list;
-OPTS *opts;
-int totlines;
+    AutoVarColumns(NODE *list, OPTS *opts, int totlines)
 {
     int widths[MAX_COLS];	/* column-width table */
     register int outlines;
@@ -86,7 +70,7 @@ int totlines;
     outlines = max(1, total_chars(list, totlines) / opts->Width);
     
     while (1) {
-	ASSERT(outlines <= totlines); /* runaway check */
+	assert(outlines <= totlines); /* runaway check */
 	ClearWidths(widths, MAX_COLS);
 	if (VariCol(list, opts, totlines, outlines, widths) == TRUE)
 	    break;
@@ -96,23 +80,15 @@ int totlines;
     OutVCols(list, opts, totlines, outlines, widths);
     return TRUE;
 }
-static void
-    ClearWidths(w, nc)
-int w[];
-int nc;
+
+static void ClearWidths(int w[], int nc)
 {
-    ASSERT (nc > 0);
+    assert (nc > 0);
     while (nc--)
 	w[nc] = 0;
 }
 
-static BOOLEAN
-    VariCol(list, opts, textlines, outlines, widths)
-NODE *list;
-OPTS *opts;
-int textlines;
-int outlines;
-int widths[];
+static BOOLEAN VariCol(NODE *list, OPTS *opts, int textlines, int outlines, int widths[])
 {
     register int col;		/* current column */
     register int line;		/* current out line */
@@ -150,12 +126,7 @@ int widths[];
     return FALSE;
 }
 
-static OutVCols(list, opts, textlines, outlines, widths)
-NODE *list;
-OPTS *opts;
-int textlines;
-int outlines;
-int widths[];
+static OutVCols(NODE *list, OPTS *opts, int textlines, int outlines, int widths[])
 {
     register int col, line;
     int ccol;			/* current character column position */
@@ -178,3 +149,13 @@ int widths[];
 	OutNL();
     }
 }
+
+BOOLEAN VarColumns(NODE *list, OPTS *opts, int totlines)
+{
+    assert(Opts.ColWidth == 0);
+    /* Only auto-columnate if she didn't say how many columns, or if */
+    /* the requested number of columns fails. */
+    if (Opts.Ncols == 0 || ManVarColumns(list, opts, totlines) == FALSE)
+	AutoVarColumns(list, opts, totlines);
+}
+
