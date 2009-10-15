@@ -17,8 +17,7 @@ static char SCCSId[] = "@(#)column.c	1.1 6/3/88 (MASSCOMP) 22:44:43";
 /* returns TRUE or FALSE, according to whether the text */
 /* will fit on the page. */
 /* FixedColumns() requires that ColWidth, NCols and Width be set. */
-BOOLEAN
-static FixedColumns(NODE *list, OPTS *opts, int totlines)
+static BOOLEAN FixedColumns(NODE *list, OPTS *opts, int totlines)
 {
     NODE *cols[MAX_COLS];	/* NODE pointers for each column */
     register int i,j;
@@ -82,6 +81,7 @@ static FixedColumns(NODE *list, OPTS *opts, int totlines)
 	}
 	OutNL();
     }
+    return TRUE;
 }
 
 /* SinglePageCol returns TRUE or FALSE, according to whether the text */
@@ -115,6 +115,7 @@ SinglePageCol(NODE *list, OPTS *opts, int totlines)
 	    try_again = TRUE;
 	}
     }
+    return TRUE;
 }
 
 BOOLEAN

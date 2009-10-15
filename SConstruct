@@ -1,4 +1,5 @@
-Program('colm', Split('''
+env=Environment()
+env.Program('colm', Split('''
    colm.c
    lists.c
    column.c
