@@ -1,0 +1,149 @@
+.\"@(#)colm.1	1.1 6/3/88 22:48:54
+.RL "MASSCOMP"
+.TH LS 1
+.UC
+.SH NAME
+colm \- columnate lines of text
+.SH SYNOPSIS
+.B colm
+[
+.B  -cglnstvwLT
+] name ...
+.SH DESCRIPTION
+.I colm
+produces multi-column output from single-column input.
+It is sort of a cross between
+.I pr
+-<n> (which prints multi-column output sorted across)
+and the column-sorting function
+of
+.I ls
+(1) (which sorts down, but only if given no filename arguments).
+It can produce fixed or variable width columns, and it figures out any
+options not explicitly specified.
+.PP
+.I colm
+uses getopt(3C) to parse its options, so options may be strung
+together, as in
+.IR -vw ,
+and values may either adhere to their option letters or follow as
+the next argument.
+The options are as follows:
+.TP
+.B \-v
+Produce variable-width columns.
+.I colm
+uses an iterative algorithm to find the maximum number of columns that
+allows at least the gutter-width between the widest element and the next
+column.
+The -v option is incompatible with -c.
+.TP
+.BI \-c n
+Use fixed-width columns of width
+.IR n .
+Data will be truncated if necessary to fit the specified column width.
+If
+.B -c
+is not used,
+.I colm
+expands the column width(s) to fit the output width.
+.TP
+.BI \-g n
+Use a "gutter" of
+.I n
+characters between columns.
+The default is 1.
+.TP
+.BI \-n n
+Use
+.I n
+fixed-width columns.
+Without
+.BR -n ,
+.I colm
+fits as many columns in the given output width as it can.
+.TP
+.B -s
+Spread the columns to fit the output width.
+Otherwise columns are made as narrow as possible,
+while leaving the gutter space between columns.
+With fixed-width columns, the columns will be spread as far as
+possible while keeping their widths even.
+WIth variable-width columns, the columns will be spread so that there
+is an even amount of white space between them.
+.TP
+.BI \-w n
+Sets the output width to
+.I n
+characters.
+The output lines may be shorter, but cannot be longer than
+.IR n .
+.TP
+.BI \-l n
+Sets the page length to
+.I n
+lines.
+This option is not implemented.
+An error message will result if you try to use it.
+.TP
+.BI \-L c
+Sets the
+.I leader character
+to
+.IR c .
+This character is used repeatedly to fill in the space between columns.
+The default is to use as many spaces and tabs as are needed.
+-L ' ' will cause
+.I colm
+not to use tabs.
+Watch out for shell metacharacters.
+.TP
+.BI \-t s
+Use the literal string "s" to separate the columns,
+rather than a repeated leader character.
+Watch out for shell metacharacters.
+.br
+There are two main differences between -L and -t:
+-L only allows a single character, while -t allows a string;
+and the leader character specified by -L is repeated to fill the
+space, whereas the string specified with -t is used only once between
+columns.
+Generally, -t will not produce even columns, while -L always will.
+.TP
+.BI \-T n
+Specifies the output tab width as
+.I n
+characters.
+The default is eight.
+.SH DIAGNOSTICS
+Several errors and warnings can be produced by
+.IR colm :
+.br
+A usage message is produced for illegal options.
+.br
+If any single input line is longer than the output width,
+.I colm
+terminates with an error.
+.br
+Illegal combinations of arguments and impossible conditions,
+such as 20 columns of 30 characters
+in an output width of 79 columns, or selecting spreading with a fixed
+separator string, cause errors.
+.br
+Certain combinations of total number of lines and specified number of
+columns cannot produce balanced columns, even with the last column
+allowed to be short.
+If this occurs,
+.I colm
+prints an explanatory message on stderr and uses a smaller number
+of columns than were specified.
+.br
+Attempting to do multi-page columnation (with -l) produces an error.
+.br
+Nonexistent or unreadable files produce an error.
+.SH SEE ALSO
+pr(1), ls(1)
+.SH BUGS
+Multi-page columnation is not implemented.
+.XX "Text manipulation"
+.XX "Columns, creating"

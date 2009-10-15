@@ -1,0 +1,14 @@
+From riacs!eos!ames!mailrus!bbn!bbn.com!rsalz Fri Nov 18 07:56:58 PST 1988
+
+Submitted-by: Gary Oberbrunner <masscomp!garyo>
+Posting-number: Volume 16, Issue 87
+Archive-name: colm
+
+I got sick of the fact that ls(1) will sort its columns down when given
+no arguments, but not in any other case.  And I figured the world needed
+a decent columnation tool.  So here is one I just whipped up; it does
+fixed and variable width columns, selectable gutter widths, it automatically
+figures out how many columns to use (unlike pr -#), and it allows various
+formatting options such as selectable leader character, selectable tabbing
+with selectable tab size, and your choice of leaders or a separation string.
+Colm should compile on any machine that has getopt(3C).
