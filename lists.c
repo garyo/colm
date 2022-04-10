@@ -11,6 +11,7 @@
 #include <string.h>
 #include "std.h"
 #include "colm.h"
+#include "lists.h"
 
 extern int debug;
 
@@ -21,9 +22,7 @@ static char SCCSId[] = "@(#)lists.c	1.1 6/3/88 (MASSCOMP) 22:44:45";
 NODE Lines = { &Lines, &Lines, 0, NULL };
 
 /* Append a new string to the list: */
-append(str, list)
-char *str;
-NODE *list;
+void append(const char *str, NODE *list)
 {
     register NODE *new;
 
@@ -45,9 +44,7 @@ NODE *list;
 /* Linearly search the next 'n' items of the list for longest string */
 /* If n is negative, the search goes forever. */
 int
-findmax(list, n)
-NODE *list;
-int n;
+findmax(const NODE *list, int n)
 {
     register NODE *current = list->next;
     NODE *longest = current;
@@ -69,9 +66,7 @@ int n;
 /* If n > 0, look only at the next 'n' items. */
 /* If n < 0, look through to the end. */
 int
-total_chars(list, n)
-NODE *list;
-int n;
+total_chars(const NODE *list, int n)
 {
     register NODE *current;
     int total = 0;

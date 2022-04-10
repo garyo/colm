@@ -9,22 +9,19 @@
 #include "stdio.h"
 #include "std.h"
 #include "colm.h"
+#include "output.h"
 
 static char SCCSId[] = "@(#)output.c	1.1 6/3/88 (MASSCOMP) 22:44:46";
 
-static OutCol = 0;		/* current output column */
+static int OutCol = 0;		/* current output column */
 
-Output(s, maxlen)
-char *s;
-int maxlen;
+void Output(const char *s, int maxlen)
 {
     OutCol += printf("%.*s", maxlen, s);
 }
 
 /* This ignores the opts right now. */
-ToCol(tocol, opts)
-int tocol;			/* column to move to (org 0) */
-OPTS *opts;			/* how to move there */
+void ToCol(int tocol, const OPTS *opts)
 {
     if (opts->ColSep[0] != '\0')
 	printf("%s", opts->ColSep);
@@ -41,7 +38,7 @@ OPTS *opts;			/* how to move there */
     }
 }
 
-OutNL()
+void OutNL()
 {
     putchar('\n');
     OutCol = 0;

@@ -33,6 +33,6 @@
 	    "\tNumber: num\n\tType  : type\n\tName  : var.\n");\
 	fprintf(stderr,"File %s, line %d\n", __FILE__, __LINE__);\
 	fprintf(stderr,\
-	"\tTotal requested: num=%d x sizeof(type)=%d\n\t =%d bytes.\n",\
-	    num, sizeof(type), (num) * sizeof(type));\
+	"\tTotal requested: num=%d x sizeof(type)=%ul\n\t =%ul bytes.\n",\
+                (int)num, (int)sizeof(type), (int)((num) * sizeof(type))); \
 	exit(99); }

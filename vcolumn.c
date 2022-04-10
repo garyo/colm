@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include "std.h"
 #include "colm.h"
+#include "lists.h"
+#include "output.h"
+#include "vcolumn.h"
 
 static char SCCSId[] = "@(#)vcolumn.c	1.2 6/3/88 (MASSCOMP) 23:11:49";
 
@@ -16,7 +19,7 @@ extern int debug;
 static void ClearWidths(int w[], int nc);
 static BOOLEAN VariCol(NODE *list, OPTS *opts,
 		       int textlines, int outlines, int widths[]);
-static OutVCols(NODE *list, OPTS *opts, int textlines, int outlines, int widths[]);
+static void OutVCols(NODE *list, OPTS *opts, int textlines, int outlines, int widths[]);
 
 BOOLEAN
     ManVarColumns(NODE *list, OPTS *opts, int totlines)
@@ -26,10 +29,10 @@ BOOLEAN
     register NODE *current;
     register int line, col;
     int twidth = 0;
-    
+
     assert(opts->Ncols > 0);
     outlines = (totlines + opts->Ncols - 1) / opts->Ncols;
-    
+
     ClearWidths(widths, MAX_COLS);
     for (current = list->next, col = 0, line=0;
 	 current != list && totlines != 0;
@@ -62,13 +65,13 @@ BOOLEAN
     int widths[MAX_COLS];	/* column-width table */
     register int outlines;
     int avglen;
-    
+
     /* We start with the smallest possible number of output lines and */
     /* successively increase by ones until it works. */
-    
+
     /* First, compute the smallest possible outlines: */
     outlines = max(1, total_chars(list, totlines) / opts->Width);
-    
+
     while (1) {
 	assert(outlines <= totlines); /* runaway check */
 	ClearWidths(widths, MAX_COLS);
@@ -94,7 +97,7 @@ static BOOLEAN VariCol(NODE *list, OPTS *opts, int textlines, int outlines, int 
     register int line;		/* current out line */
     register int twidth = 0;
     register NODE *current;
-    
+
     for (current = list->next, col = 0, line=0;
 	 current != list && textlines != 0;
 	 current = current->next, textlines--) {
@@ -126,12 +129,12 @@ static BOOLEAN VariCol(NODE *list, OPTS *opts, int textlines, int outlines, int 
     return FALSE;
 }
 
-static OutVCols(NODE *list, OPTS *opts, int textlines, int outlines, int widths[])
+static void OutVCols(NODE *list, OPTS *opts, int textlines, int outlines, int widths[])
 {
     register int col, line;
     int ccol;			/* current character column position */
     NODE *cols[MAX_COLS];
-    
+
     /* Get pointers to text lines, one for each column */
     for (col = 0; col < opts->Ncols; col++) {
 	cols[col] = findn(list, outlines * col);
@@ -156,6 +159,7 @@ BOOLEAN VarColumns(NODE *list, OPTS *opts, int totlines)
     /* Only auto-columnate if she didn't say how many columns, or if */
     /* the requested number of columns fails. */
     if (Opts.Ncols == 0 || ManVarColumns(list, opts, totlines) == FALSE)
-	AutoVarColumns(list, opts, totlines);
+        return AutoVarColumns(list, opts, totlines);
+    else
+        return 1;
 }
-

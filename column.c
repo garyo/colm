@@ -9,6 +9,10 @@
 #include <stdio.h>
 #include "std.h"
 #include "colm.h"
+#include "column.h"
+#include "vcolumn.h"
+#include "output.h"
+#include "lists.h"
 
 extern int debug;
 
@@ -92,7 +96,7 @@ SinglePageCol(NODE *list, OPTS *opts, int totlines)
     int try_again = TRUE;
     while (try_again) {
 	try_again = FALSE;
-	
+
 	if (opts->ColWidth > 0 && opts->Ncols > 0)
 	    return FixedColumns(list, opts, totlines);
 	if (opts->Vflg == TRUE)
@@ -140,4 +144,3 @@ Error: Some input line is longer than the output width of %d chars.\n",
 	return MultiPageCol(list, opts, totlines);
     else return TRUE;
 }
-

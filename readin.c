@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include "std.h"
 #include "colm.h"
+#include "lists.h"
 
 #define MAX_LEN 20000		/* maximum string length */
 
@@ -17,9 +18,7 @@ extern int debug;
 
 static char SCCSId[] = "@(#)readin.c	1.1 6/3/88 (MASSCOMP) 22:44:47";
 
-ReadIn(fname, list)
-char *fname;
-NODE *list;
+int ReadIn(const char *fname, NODE *list)
 {
     char Instr[MAX_LEN];
     FILE *infile = NULL;

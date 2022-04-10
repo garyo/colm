@@ -21,15 +21,20 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <getopt.h>
 #include "std.h"
 #include "colm.h"
+#include "column.h"
+#include "readin.h"
 
 int debug = 1;
 static char SCCSId[] = "@(#)colm.c	1.2 6/3/88 (MASSCOMP) 23:17:12";
 static char Copyright[] = "Copyright c. 1988, Gary Oberbrunner.";
+void Usage();
+
 
 OPTS Opts;			/* global copy of original options */
-main (argc, argv)
+int main (argc, argv)
 int argc;
 char **argv;
 {
@@ -114,7 +119,7 @@ char **argv;
 	Columnate(&Lines, &opts, totlines);
 }
 
-Usage()
+void Usage()
 {
     fprintf(stderr,"\n\
 Usage: colm [-cglnstvwLT] <files>\n\
